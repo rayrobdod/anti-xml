@@ -116,6 +116,17 @@ class XMLSerializerSpecs extends Specification {
       x.toString mustEqual """<feed xmlns="urn:main" xmlns:ext="urn:ext"><ext:my-ext/><ext:my-ext/></feed>"""
     }
 
+    "serialize pre-emptively added namespace correctly" in {
+      val ext = NamespaceBinding("ext", "urn:ext")
+      val main = NamespaceBinding("urn:main", ext)
+      val x = Elem(None, "feed", Attributes(), main, Group(
+        Elem(Some("ext"), "my-ext", Attributes(), main, Group()),
+        Elem(Some("ext"), "my-ext", Attributes(), main, Group())
+      ))
+
+      x.toString mustEqual """<feed xmlns="urn:main" xmlns:ext="urn:ext"><ext:my-ext/><ext:my-ext/></feed>"""
+    }
+
     /**
      * This covers the use case where you know/suspect elements to use extra namespaces, like when Atom entries
      * use Atom extensions.
