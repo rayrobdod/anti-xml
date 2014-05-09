@@ -61,10 +61,47 @@ class XMLSpecs extends Specification {
       fromString("<test>\n  \n\t\n</test>") mustEqual elem("test", Text("\n  \n\t\n"))
     }
 
-    "preserve prefixes" in {
+    "preserve namespace prefixes" in {
       val ns = "urn:my-urn:quux"
       val e = fromString("<my:test xmlns:my='urn:my-urn:quux'/>")
       e mustEqual Elem(Some("my"), "test", Attributes(), NamespaceBinding("my", ns), Group.empty)
+    }
+
+    "preserve default namespaces" in {
+      val ns = "urn:my-urn:quux"
+      val e = fromString("<test xmlns='urn:my-urn:quux'/>")
+      e mustEqual Elem(None, "test", Attributes(), NamespaceBinding(ns), Group.empty)
+    }
+
+    "accept an undeclared xml prefix" in {
+      val ns = "http://www.w3.org/XML/1998/namespace"
+      val e = fromString("<test xml:space='preserve'/>")
+      e mustEqual Elem(None, "test", Attributes(QName(Some("xml"), "space") -> "preserve"), NamespaceBinding.empty, Group.empty)
+    }
+
+    "accept an declared xml prefix" in {
+      val ns = "http://www.w3.org/XML/1998/namespace"
+      val e = fromString("<test xml:space='preserve' xmlns:xml='http://www.w3.org/XML/1998/namespace'/>")
+      e mustEqual Elem(None, "test", Attributes(QName(Some("xml"), "space") -> "preserve"), NamespaceBinding.empty, Group.empty)
+    }
+
+    "preserve unused namespace prefixes" in {
+      val ns = "urn:my-urn:quux"
+      val ns2 = "urn:my-urn:wiiz"
+      val e = fromString("<my:test xmlns:my='urn:my-urn:quux' xmlns:other='urn:my-urn:wiiz'/>")
+      e mustEqual Elem(Some("my"), "test", Attributes(), NamespaceBinding("other", ns2, NamespaceBinding("my", ns)), Group.empty)
+    }
+
+    "preserve doublely prefixed namespaces" in {
+      val ns = "urn:my-urn:quux"
+      val e = fromString("<my:test xmlns:my='urn:my-urn:quux' xmlns:tu='urn:my-urn:quux'/>")
+      e mustEqual Elem(Some("my"), "test", Attributes(), NamespaceBinding("tu", ns, NamespaceBinding("my", ns)), Group.empty)
+    }
+
+    "preserve doublely prefixed namespaces when one is default" in {
+      val ns = "urn:my-urn:quux"
+      val e = fromString("<my:test xmlns:my='urn:my-urn:quux' xmlns='urn:my-urn:quux'/>")
+      e mustEqual Elem(Some("my"), "test", Attributes(), NamespaceBinding(ns, NamespaceBinding("my", ns)), Group.empty)
     }
     
     "parse prefixes" in {

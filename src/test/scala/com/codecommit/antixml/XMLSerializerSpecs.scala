@@ -77,6 +77,30 @@ class XMLSerializerSpecs extends Specification {
       fromString(x).toString mustEqual x.trim
     }
 
+    "serialize namespaces with pre-emptive multiple prefixes correctly" in {
+      val x = """
+      <a xmlns="urn:x" xmlns:x="urn:x">
+        <x:c/>
+      </a>"""
+      fromString(x).toString mustEqual x.trim
+    }
+
+    "serialize namespaces with pre-emptive multiple prefixes correctly" in {
+      val x = """
+      <x:a xmlns="urn:x" xmlns:x="urn:x">
+        <c/>
+      </x:a>"""
+      fromString(x).toString mustEqual x.trim
+    }
+
+    "serialize namespaces with pre-emptive multiple prefixes correctly" in {
+      val x = """
+      <a xmlns:x="urn:x" xmlns="urn:x">
+        <x:c/>
+      </a>"""
+      fromString(x).toString mustEqual x.trim
+    }
+
     /**
      * This covers the use case where you know/suspect elements to use extra namespaces, like when Atom entries
      * use Atom extensions.
