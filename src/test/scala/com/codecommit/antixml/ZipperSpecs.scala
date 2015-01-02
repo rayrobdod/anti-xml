@@ -37,7 +37,7 @@ import scala.io.Source
 
 class ZipperSpecs extends Specification with ScalaCheck with XMLGenerators with LowPrioritiyImplicits {
 
-  implicit val params = set(maxSize -> 10, minTestsOk -> 20)
+  implicit val params = set(maxSize = 10, minTestsOk = 20)
   val bookstore = resource("bookstore.xml")
   val onlyBell = Group(<bookstore><book><title>For Whom the Bell Tolls</title><author>Hemmingway</author></book></bookstore>.convert)
   val onlyPS = Group(<bookstore><book><title>Programming Scala</title><author>Dean Wampler</author><author>Alex Payne</author></book></bookstore>.convert)
@@ -323,8 +323,8 @@ class ZipperSpecs extends Specification with ScalaCheck with XMLGenerators with 
       // find afresh without using >
       bookstore2.head.asInstanceOf[Elem].children(0).asInstanceOf[Elem].attrs mustEqual Attributes("updated" -> "yes")
       bookstore2.head.asInstanceOf[Elem].children(1).asInstanceOf[Elem].attrs mustEqual Attributes("updated" -> "yes")
-      
-      (bookstore2 \ "book" \ "title" \ *) must beLike((_:Node) match { case Text("Programming Scala") => ok }).forall
+      val titleValue : Node = (bookstore2 \ "book" \ "title" \ *).head
+      titleValue mustEqual Text("Programming Scala")
     }
     
     // my attempt at a "real world" test case"
