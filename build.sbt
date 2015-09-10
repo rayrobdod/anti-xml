@@ -1,8 +1,8 @@
-organization := "no.arktekk"
+organization := "com.rayrobdod"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.5"
 
-crossScalaVersions := Seq("2.10.4", "2.11.2")
+crossScalaVersions := Seq("2.10.5", "2.11.7")
 
 scalacOptions := Seq("-deprecation", "-language:_")
 

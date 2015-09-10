@@ -1,6 +1,3 @@
-publishTo <<= (version) apply {
-  (v: String) => if (v.trim().endsWith("SNAPSHOT")) Some(Opts.resolver.sonatypeSnapshots) else Some(Opts.resolver.sonatypeStaging)
-}
 
 credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
 
@@ -65,6 +62,9 @@ pomExtra <<= (pomExtra) { (pom) => pom ++ xml.Group(
         </contributor>
         <contributor>
           <name>Heikki Vesalainen</name>
+        </contributor>
+        <contributor>
+          <name>Raymond Dodge</name>
         </contributor>
       </contributors>
   )
